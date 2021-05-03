@@ -1,15 +1,15 @@
 <template>
-  <hello-world />
+  <Coyote />
 </template>
 
 <script>
-import HelloWorld from '../components/HelloWorld'
+import Coyote from '../components/Coyote'
 
 export default {
   name: 'Home',
 
   components: {
-    HelloWorld
+    Coyote
   }
 }
 </script>
