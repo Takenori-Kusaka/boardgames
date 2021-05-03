@@ -7,8 +7,6 @@
       dark
       color="pink"
     >
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
       <v-toolbar-title>Coyote</v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -175,6 +173,7 @@ export default {
     },
     start: function () {
       this.playing = true
+      this.playercards = []
       this.deal()
     },
     finish: function () {
@@ -187,10 +186,19 @@ export default {
         do {
           const tmp = Math.floor(Math.random() * this.cards.length)
           if (this.cards[tmp].used === false) {
-            this.playercards.push({
-              player: this.playerlist[i].name,
-              card: this.cards[tmp].value
-            })
+            let p
+            for (p = 0; p < this.playercards.length; p++) {
+              if (this.playercards[p].player === this.playerlist[i].name) {
+                this.playercards[p].card = this.cards[tmp].value
+                break
+              }
+            }
+            if (p >= this.playercards.length) {
+              this.playercards.push({
+                player: this.playerlist[i].name,
+                card: this.cards[tmp].value
+              })
+            }
             if (this.cards[tmp].value === '0(Reset)') {
               reset = true
             }
@@ -205,7 +213,9 @@ export default {
       for (let i = 0; i < this.playercards.length; i++) {
         this.playercards[i].message = ''
         for (let p = 0; p < this.playercards.length; p++) {
-          this.playercards[i].message += this.playercards[i].player + 'さんのカードは、「' + this.playercards[i].card + '」です\r\n'
+          if (i !== p) {
+            this.playercards[i].message += this.playercards[p].player + 'さんのカードは、「' + this.playercards[p].card + '」です\r\n'
+          }
         }
       }
       this.dealcards_dialog = true
@@ -228,9 +238,6 @@ export default {
     },
     clipboard: function (msg) {
       navigator.clipboard.writeText(msg)
-        .then((e) => {
-          alert('You just copied: ' + e.text)
-        })
         .catch((e) => {
           alert('Failed to copy texts. Cause: ' + e.text)
         })
