@@ -3,19 +3,6 @@
     class="mx-auto"
     max-width="80vw"
   >
-    <v-app-bar
-      dark
-      color="pink"
-    >
-      <v-toolbar-title>Coyote</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon @click="setting">mdi-account-settings</v-icon>
-      </v-btn>
-    </v-app-bar>
-
     <v-simple-table dense>
       <template v-slot:default>
         <thead>
@@ -50,71 +37,21 @@
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn v-if="playing" @click="finish">
+      <v-btn v-if="playing" @click="finish" color="error">
         ゲームを終了する
       </v-btn>
-      <v-btn v-else @click="start">
+      <v-btn v-else @click="start" color="success">
         ゲームを開始する
       </v-btn>
       <v-breadcrumbs divider=" "></v-breadcrumbs>
-      <v-btn @click="deal">
+      <v-btn @click="deal" color="info">
         カードを配る
       </v-btn>
       <v-breadcrumbs divider=" "></v-breadcrumbs>
-      <v-btn @click="review">
+      <v-btn @click="review" color="info">
         カードを再表示する
       </v-btn>
     </v-card-actions>
-    <v-dialog v-model="setting_dialog"
-    max-width="30vw">
-      <v-card>
-        <v-toolbar
-          color="orange lighten-1"
-          dark
-        >
-          <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-          <v-toolbar-title>Player list</v-toolbar-title>
-
-          <v-spacer></v-spacer>
-
-          <v-btn icon @click="add_account">
-            <v-icon>mdi-account-plus</v-icon>
-          </v-btn>
-        </v-toolbar>
-
-        <v-simple-table>
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-left">
-                  Name
-                </th>
-                <th class="text-left">
-                  Ctrl
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in playerlist"
-                :key="index"
-              >
-                <td>
-                  <v-text-field v-model="item.name">
-                  </v-text-field>
-                </td>
-                <td>
-                  <v-btn icon @click="remove_account(index)">
-                    <v-icon>mdi-account-minus</v-icon>
-                  </v-btn>
-                </td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-card>
-    </v-dialog>
     <v-dialog v-model="dealcards_dialog"
       max-width="50vw">
       <v-card
@@ -154,12 +91,12 @@
 export default {
   name: 'Coyote',
 
+  props: ['playerlist'],
+
   data: () => ({
     cards: [],
-    playerlist: [],
     playercards: [],
     dealcards_dialog: false,
-    setting_dialog: false,
     playing: false
   }),
 
@@ -168,9 +105,6 @@ export default {
   },
 
   methods: {
-    setting: function () {
-      this.setting_dialog = true
-    },
     start: function () {
       this.playing = true
       this.playercards = []
@@ -228,25 +162,11 @@ export default {
         this.cards[i].used = false
       }
     },
-    add_account: function () {
-      this.playerlist.push({
-        name: ''
-      })
-    },
-    remove_account: function (index) {
-      this.playerlist = this.playerlist.filter(n => n !== index)
-    },
     clipboard: function (msg) {
       navigator.clipboard.writeText(msg)
         .catch((e) => {
           alert('Failed to copy texts. Cause: ' + e.text)
         })
-    },
-    onCopy: function (e) {
-      alert('You just copied: ' + e.text)
-    },
-    onError: function (e) {
-      alert('Failed to copy texts')
     },
     initialize: function () {
       this.cards = []
